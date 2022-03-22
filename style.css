@@ -1,0 +1,177 @@
+:root {
+    --dark-spring-green: #2c6e49ff;
+    --deep-champagne: #ffd791ff;
+    --granite-gray: #6c6061ff;
+    --pewter-blue: #82a6b1ff;
+    --lt-pewter-blue: #82a6b1ff;
+    --dark-sky-blue: #83b5d1ff;
+    --baby-pink: #efc7c2ff;
+    --eggplant: #694f5dff;
+}
+
+*{
+
+}
+
+body{
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--pewter-blue);
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+
+.letter-block{
+    transform: rotateY(180deg);
+    width: 65px;
+    height: 65px;
+    margin: 7px 5px;
+}
+
+.letter-block-inner{
+    color: #FFFFFF00;
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: var(--lt-pewter-blue);
+}
+
+.no-guess{
+    color: #FFFFFF00;
+    background-color: var(--lt-pewter-blue);
+}
+
+.guess-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 410px;
+    background-color: var(--dark-sky-blue);
+
+}
+
+.results-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.input-container{
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 75px;
+    width: 410px;
+    margin: 10px 0px;
+
+    background-color: var(--dark-sky-blue);
+
+}
+
+#input-box{
+    color: var(--deep-champagne);
+    padding: 10px;
+    width: 150px;
+    font-size: 25px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    background-color: var(--lt-pewter-blue);
+}
+
+input[type=text], textarea {
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border: 3px solid white;
+    border-radius: 5px;
+}
+
+input[type=text]:focus, textarea:focus {
+    box-shadow: 0 0 10px var(--deep-champagne);
+    border: 3px solid var(--deep-champagne);
+}
+
+button{
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 3px solid white;
+    -webkit-transition: all 0.20s;
+    -moz-transition: all 0.20s;
+    -ms-transition: all 0.20s ;
+    -o-transition: all 0.20s;
+    background-color: var(--lt-pewter-blue);
+}
+
+button:focus {
+    box-shadow: 0 0 10px var(--deep-champagne);
+    border: 3px solid var(--deep-champagne);
+}
+
+button:active{
+    transform: translateY(2px) scale(.95);
+}
+
+.message-container{
+    height: 75px;
+    margin: 15px 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.message-box{
+    font-size: 1.5rem;
+}
+
+.correct-letter{
+    background-color: var(--dark-spring-green);
+    transform: rotateY(180deg);
+    color: white;
+}
+
+.misplaced-letter{
+    background-color: var(--deep-champagne);
+    transform: rotateY(180deg);
+    color: white;
+}
+
+.incorrect-letter{
+    background-color: var(--eggplant);
+    transform: rotateY(180deg);
+    color: white;
+}
+
+.block-1 {
+    transition: transform 0.5s 0s, background-color 0.5s 0s, color 0.5s .3s;
+}
+.block-2 {
+    transition: transform 0.5s 0.3s, background-color 0.5s 0.3s, color 0.5s 0.6s;
+}
+.block-3 {
+    transition: transform 0.5s 0.6s, background-color 0.5s 0.6s, color 0.5s 0.9s;
+}
+.block-4 {
+    transition: transform 0.5s 0.9s, background-color 0.5s 0.9s, color 0.5s 1.2s;
+}
+.block-5 {
+    transition: transform 0.5s 1.2s, background-color 0.5s 1.2s, color 0.5s 1.5s;
+}
+.block-6 {
+    transition: transform 0.5s 1.5s, background-color 0.5s 1.5s, color 0.5s 1.8s;
+}
+.block-7 {
+    transition: transform 0.5s 1.8s, background-color 0.5s 1.8s, color 0.5s 2.1s;
+}
