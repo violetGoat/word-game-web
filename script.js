@@ -2,8 +2,8 @@ const inputBox = document.getElementById('input-box');
 const submitButton = document.getElementById("submit-button");
 const resetButton = document.getElementById("reset-button")
 const messageBox = document.getElementById("message-box");
-const guessContainers = document.getElementsByClassName("guess-container");
-const letterBlocksInner = document.getElementsByClassName("letter-block-inner")
+const guessContainers = document.querySelectorAll(".guess-container");
+const letterBlocksInner = document.querySelectorAll(".letter-block-inner")
 const RANDOM_WORD_API_URL = "https://violetgoat-word-backend.herokuapp.com/random/"
 const MAX_GUESSES = 6;
 const WORD_LENGTH = 5;
@@ -43,7 +43,7 @@ async function getTextFromStream(readableStream) {
 }
 
 async function submitGuess(){
-    const guess = inputBox.value;
+    const guess = inputBox.value.toLowerCase();
 
     if(guess.length !== secretWord.length || !isValidWord(guess)){
         printMessage("Enter a "  + secretWord.length + "-letter word.");
@@ -51,8 +51,7 @@ async function submitGuess(){
 
         printMessage("");
 
-        updateResultArray(guess)
-
+        updateResultArray(guess);
         updateDomWithResult(guess);
 
         guessCount += 1;
@@ -69,7 +68,7 @@ async function submitGuess(){
 
 function reset(){
     guessCount = 0;
-    Array.from(letterBlocksInner).forEach(element=>{
+    letterBlocksInner.forEach(element=>{
         element.classList.remove('correct-letter');
         element.classList.remove('misplaced-letter');
         element.classList.remove('incorrect-letter');
