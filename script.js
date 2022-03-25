@@ -4,8 +4,9 @@ const resetButton = document.getElementById("reset-button")
 const messageBox = document.getElementById("message-box");
 const guessContainers = document.getElementsByClassName("guess-container");
 const letterBlocksInner = document.getElementsByClassName("letter-block-inner")
-const RANDOM_WORD_API_URL = "/"
+const RANDOM_WORD_API_URL = "https://violetgoat-word-backend.herokuapp.com/random/"
 const MAX_GUESSES = 6;
+const WORD_LENGTH = 5;
 let guessedLetterFrequencyMap = {};
 let secretWord = "train";
 let guessCount = 0;
@@ -13,23 +14,32 @@ let guessCount = 0;
 submitButton.addEventListener("click", submitGuess);
 resetButton.addEventListener("click", reset);
 
-// async function generateRandomWord() {
-//
-//     const config = {
-//         headers: {
-//             Accept: 'application/json'
-//         }
-//     }
-//
-//     // fetch word from server
-//
-//     const response = await fetch(RANDOM_WORD_API_URL + wordLength, config)
-//     const wordData = await response.json()
-//
-//     // add word to word element
-//
-//     secretWord = wordData.word;
-// }
+generateRandomWord();
+
+async function generateRandomWord() {
+
+    // fetch word from server
+
+    let response = await fetch(RANDOM_WORD_API_URL + WORD_LENGTH);
+
+    secretWord = await getTextFromStream(response.body);
+
+}
+
+async function getTextFromStream(readableStream) {
+    let reader = readableStream.getReader();
+    let utf8Decoder = new TextDecoder();
+    let nextChunk;
+
+    let resultStr = '';
+
+    while (!(nextChunk = await reader.read()).done) {
+        let partialData = nextChunk.value;
+        resultStr += utf8Decoder.decode(partialData);
+    }
+
+    return resultStr;
+}
 
 async function submitGuess(){
     const guess = inputBox.value;
@@ -57,11 +67,12 @@ async function submitGuess(){
             }
 
             currentBox.classList.remove("no-guess");
-            currentBox.innerHTML = guess.charAt(i).toUpperCase();
+            currentBox.innerText = guess.charAt(i).toUpperCase();
 
         }
 
         guessCount += 1;
+        inputBox.value = "";
 
         if(resultArray.every(num=>num ===2 )){
             printMessage("You got it!")
@@ -80,6 +91,8 @@ function reset(){
         element.classList.remove('incorrect-letter');
         element.classList.add("no-guess");
     })
+    printMessage("");
+    generateRandomWord();
 }
 
 /**
@@ -158,7 +171,7 @@ function frequencyOfCharacterInCorrectWord(guessChar) {
 
 
 function printMessage(message){
-    messageBox.innerHTML = message;
+    messageBox.innerText = message;
 }
 
 function isValidWord(){

@@ -24,10 +24,30 @@ body{
     font-family: Roboto, Arial, Helvetica, sans-serif;
 }
 
+.results-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--dark-sky-blue);
+    width: 90%;
+    max-width: 410px;
+    height: 500px;
+}
+
+.guess-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: var(--dark-sky-blue);
+
+}
+
 .letter-block{
     transform: rotateY(180deg);
-    width: 65px;
-    height: 65px;
+    width: 55px;
+    height: 55px;
     margin: 7px 5px;
 }
 
@@ -47,20 +67,6 @@ body{
     background-color: var(--lt-pewter-blue);
 }
 
-.guess-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 410px;
-    background-color: var(--dark-sky-blue);
-
-}
-
-.results-container{
-    display: flex;
-    flex-direction: column;
-}
 
 .input-container{
 
