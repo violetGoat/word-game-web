@@ -10,13 +10,14 @@ const WORD_LENGTH = 5;
 let guessedLetterFrequencyMap = {};
 let secretWord = "train";
 let guessCount = 0;
+const resultArray = [];
 
 submitButton.addEventListener("click", submitGuess);
 resetButton.addEventListener("click", reset);
 
-generateRandomWord();
+fetchSecretWord();
 
-async function generateRandomWord() {
+async function fetchSecretWord() {
 
     // fetch word from server
 
@@ -50,26 +51,9 @@ async function submitGuess(){
 
         printMessage("");
 
-        const resultArray = getResultArray(guess, secretWord);
+        updateResultArray(guess)
 
-        const currentRowGuessBoxes = guessContainers[guessCount].children;
-
-        for(let i = 0; i < secretWord.length; i++){
-
-            const currentBox = currentRowGuessBoxes[i].firstElementChild;
-
-            if(resultArray[i] === 2){
-                currentBox.classList.add("correct-letter")
-            } else if(resultArray[i] === 1) {
-                currentBox.classList.add("misplaced-letter")
-            } else {
-                currentBox.classList.add("incorrect-letter")
-            }
-
-            currentBox.classList.remove("no-guess");
-            currentBox.innerText = guess.charAt(i).toUpperCase();
-
-        }
+        updateDomWithResult(guess);
 
         guessCount += 1;
         inputBox.value = "";
@@ -92,7 +76,7 @@ function reset(){
         element.classList.add("no-guess");
     })
     printMessage("");
-    generateRandomWord();
+    fetchSecretWord();
 }
 
 /**
@@ -101,22 +85,18 @@ function reset(){
  * @param {String} secretWord
  * @returns {*[]}
  */
-function getResultArray(guess, secretWord){
-
-    const resultArray = [];
+function updateResultArray(guess){
 
     for(let i = 0; i < secretWord.length; i++){
-        resultArray.push(0);
+        resultArray[i] = 0;
     }
 
-    checkForCorrectLettersInCorrectPosition(guess, secretWord, resultArray);
+    checkForCorrectLettersInCorrectPosition(guess, secretWord);
+    checkForCorrectLettersInWrongPosition(guess, secretWord);
 
-    checkForCorrectLettersInWrongPosition(guess, secretWord, resultArray);
-
-    return resultArray;
 }
 
-function checkForCorrectLettersInCorrectPosition(guess, secretWord, resultArray){
+function checkForCorrectLettersInCorrectPosition(guess, secretWord){
     for(let i = 0; i < resultArray.length; i++){
         const guessChar = guess.charAt(i);
         const correctChar = secretWord.charAt(i);
@@ -127,7 +107,7 @@ function checkForCorrectLettersInCorrectPosition(guess, secretWord, resultArray)
     }
 }
 
-function checkForCorrectLettersInWrongPosition(guess, secretWord, resultArray) {
+function checkForCorrectLettersInWrongPosition(guess, secretWord) {
     for(let i = 0; i < resultArray.length; i++){
 
         if(resultArray[i] === 2){
@@ -139,9 +119,10 @@ function checkForCorrectLettersInWrongPosition(guess, secretWord, resultArray) {
         if(secretWord.indexOf(guessChar) !== -1) {
 
             addOrIncrementLetterFrequencyInGuessedLettersMap(guessChar);
+            const correctFrequency = frequencyOfCharacterInCorrectWord(guessChar)
 
             if(!(guessedLetterFrequencyMap[guessChar] >
-                frequencyOfCharacterInCorrectWord(guessChar))) {
+                correctFrequency)) {
                 resultArray[i] = 1;
             }
         }
@@ -166,7 +147,6 @@ function frequencyOfCharacterInCorrectWord(guessChar) {
     }
 
     return count;
-
 }
 
 
@@ -176,4 +156,26 @@ function printMessage(message){
 
 function isValidWord(){
     return true;
+}
+
+function updateDomWithResult(guess){
+
+    const currentRowGuessBoxes = guessContainers[guessCount].children;
+
+    for(let i = 0; i < secretWord.length; i++){
+
+        const currentBox = currentRowGuessBoxes[i].firstElementChild;
+
+        if(resultArray[i] === 2){
+            currentBox.classList.add("correct-letter")
+        } else if(resultArray[i] === 1) {
+            currentBox.classList.add("misplaced-letter")
+        } else {
+            currentBox.classList.add("incorrect-letter")
+        }
+
+        currentBox.classList.remove("no-guess");
+        currentBox.innerText = guess.charAt(i).toUpperCase();
+
+    }
 }
