@@ -12,14 +12,14 @@ let secretWord = "train";
 let guessCount = 0;
 const resultArray = [];
 
-submitButton.addEventListener("click", submitGuess);
-resetButton.addEventListener("click", reset);
+document.addEventListener('DOMContentLoaded', () => {
+    submitButton.addEventListener("click", submitGuess);
+    resetButton.addEventListener("click", reset);
+})
 
 fetchSecretWord();
 
 async function fetchSecretWord() {
-
-    // fetch word from server
 
     let response = await fetch(RANDOM_WORD_API_URL + WORD_LENGTH);
 
@@ -42,7 +42,8 @@ async function getTextFromStream(readableStream) {
     return resultStr;
 }
 
-async function submitGuess(){
+function submitGuess(){
+
     const guess = inputBox.value.toLowerCase();
 
     if(guess.length !== secretWord.length || !isValidWord(guess)){
@@ -153,7 +154,19 @@ function printMessage(message){
     messageBox.innerText = message;
 }
 
-function isValidWord(){
+function isValidWord(guess){
+    // let isValid = false;
+    //
+    // fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + guess)
+    //     .then((response) => {
+    //         return response.json();
+    //     })
+    //     .then((data) => {
+    //         console.log(data);
+    //         isValid = data[0].hasOwnProperty('word');
+    //     })
+    //
+    // return isValid;
     return true;
 }
 
