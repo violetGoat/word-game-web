@@ -263,7 +263,7 @@ function updateDomForWordLength(wordLength) {
 
         guessContainers.forEach(guessContainer => {
             let count = 1;
-            
+
             while (guessContainer.childElementCount < wordLength) {
                 const blockNumber = currentWordLength + count;
                 const child = document.createElement("div");
