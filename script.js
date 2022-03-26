@@ -1,29 +1,42 @@
 const inputBox = document.getElementById('input-box');
 const submitButton = document.getElementById("submit-button");
 const resetButton = document.getElementById("reset-button")
+const resetPlusButton = document.getElementById('reset-plus-button');
+const resetMinusButton = document.getElementById('reset-minus-button');
 const messageBox = document.getElementById("message-box");
 const guessContainers = document.querySelectorAll(".guess-container");
-const letterBlocksInner = document.querySelectorAll(".letter-block-inner")
+const keys = document.querySelectorAll(".key");
 const RANDOM_WORD_API_URL = "https://violetgoat-word-backend.herokuapp.com/random/"
 const MAX_GUESSES = 6;
 const WORD_LENGTH = 5;
 let guessedLetterFrequencyMap = {};
 let secretWord = "train";
 let guessCount = 0;
+let gameOver = false;
+let currentWordLength = WORD_LENGTH;
 const resultArray = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     submitButton.addEventListener("click", submitGuess);
-    resetButton.addEventListener("click", reset);
+    resetButton.addEventListener("click", resetSame);
+    resetPlusButton.addEventListener('click', resetPlus);
+    resetMinusButton.addEventListener('click', resetMinus)
+    keys.forEach(key=>key.addEventListener('click', (e)=>keyPress(e)))
 })
 
 fetchSecretWord();
 
-async function fetchSecretWord() {
+async function fetchSecretWord(wordLength = WORD_LENGTH) {
 
-    let response = await fetch(RANDOM_WORD_API_URL + WORD_LENGTH);
+    let isValid = false;
 
-    secretWord = await getTextFromStream(response.body);
+    do {
+        let response = await fetch(RANDOM_WORD_API_URL + wordLength);
+        secretWord = await getTextFromStream(response.body);
+        isValid = await isValidWord(secretWord);
+    } while(!isValid)
+
+    currentWordLength = wordLength;
 
 }
 
@@ -42,13 +55,23 @@ async function getTextFromStream(readableStream) {
     return resultStr;
 }
 
-function submitGuess(){
+async function submitGuess(){
+
+    if(gameOver) {return;}
 
     const guess = inputBox.value.toLowerCase();
+    guessedLetterFrequencyMap = {}
+    const valid = await isValidWord(guess);
 
-    if(guess.length !== secretWord.length || !isValidWord(guess)){
+    if(guess.length !== secretWord.length){
+
         printMessage("Enter a "  + secretWord.length + "-letter word.");
-    } else if(guessCount < MAX_GUESSES) {
+
+    } else if (!valid){
+
+        printMessage("I'm pretty sure that's not a word.");
+
+    } else {
 
         printMessage("");
 
@@ -60,43 +83,65 @@ function submitGuess(){
 
         if(resultArray.every(num=>num ===2 )){
             printMessage("You got it!")
+            gameOver = true;
         } else if(guessCount === MAX_GUESSES){
             printMessage(`No. The word was: ${secretWord.toUpperCase()}`)
+            gameOver = true;
         }
-            guessedLetterFrequencyMap = {}
+
     }
 }
 
-function reset(){
+function reset(wordLength){
+
     guessCount = 0;
+
+    printMessage("");
+    updateDomForWordLength(wordLength);
+
+    const letterBlocksInner = document.querySelectorAll(".letter-block-inner")
+
     letterBlocksInner.forEach(element=>{
         element.classList.remove('correct-letter');
         element.classList.remove('misplaced-letter');
         element.classList.remove('incorrect-letter');
         element.classList.add("no-guess");
     })
-    printMessage("");
-    fetchSecretWord();
+
+    keys.forEach(key=>clearKeyClass(key));
+
+    fetchSecretWord(wordLength);
+
 }
 
-/**
- *
- * @param {String} guess
- * @param {String} secretWord
- * @returns {*[]}
- */
+function resetSame(){
+    reset(currentWordLength);
+}
+
+function resetMinus(){
+    if(currentWordLength > 4){
+        reset(currentWordLength-1)
+    }
+}
+
+function resetPlus(){
+    if(currentWordLength < 7){
+        reset(currentWordLength+1)
+    }
+}
+
 function updateResultArray(guess){
 
     for(let i = 0; i < secretWord.length; i++){
         resultArray[i] = 0;
     }
 
-    checkForCorrectLettersInCorrectPosition(guess, secretWord);
-    checkForCorrectLettersInWrongPosition(guess, secretWord);
+    checkForCorrectLettersInCorrectPosition(guess);
+    checkForCorrectLettersInWrongPosition(guess);
 
 }
 
-function checkForCorrectLettersInCorrectPosition(guess, secretWord){
+function checkForCorrectLettersInCorrectPosition(guess){
     for(let i = 0; i < resultArray.length; i++){
         const guessChar = guess.charAt(i);
         const correctChar = secretWord.charAt(i);
@@ -107,7 +152,7 @@ function checkForCorrectLettersInCorrectPosition(guess, secretWord){
     }
 }
 
-function checkForCorrectLettersInWrongPosition(guess, secretWord) {
+function checkForCorrectLettersInWrongPosition(guess) {
     for(let i = 0; i < resultArray.length; i++){
 
         if(resultArray[i] === 2){
@@ -154,40 +199,116 @@ function printMessage(message){
     messageBox.innerText = message;
 }
 
-function isValidWord(guess){
-    // let isValid = false;
-    //
-    // fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + guess)
-    //     .then((response) => {
-    //         return response.json();
-    //     })
-    //     .then((data) => {
-    //         console.log(data);
-    //         isValid = data[0].hasOwnProperty('word');
-    //     })
-    //
-    // return isValid;
-    return true;
+async function isValidWord(guess){
+    return fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + guess)
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            return data[0].hasOwnProperty('word');
+        }).catch(()=> {return false})
+
 }
 
 function updateDomWithResult(guess){
 
     const currentRowGuessBoxes = guessContainers[guessCount].children;
 
+    // update color of letters in results container (top)
     for(let i = 0; i < secretWord.length; i++){
 
+        const guessedLetter = guess.charAt(i).toUpperCase();
         const currentBox = currentRowGuessBoxes[i].firstElementChild;
+        const correspondingKey = document.getElementById(guessedLetter);
 
         if(resultArray[i] === 2){
             currentBox.classList.add("correct-letter")
         } else if(resultArray[i] === 1) {
             currentBox.classList.add("misplaced-letter")
+
+            if(correspondingKey!== null){
+                clearKeyClass(correspondingKey)
+                correspondingKey.classList.add("misplaced-letter")
+            }
         } else {
             currentBox.classList.add("incorrect-letter")
+
+            if(correspondingKey!== null){
+                clearKeyClass(correspondingKey)
+                correspondingKey.classList.add("incorrect-letter")
+            }
+
         }
 
         currentBox.classList.remove("no-guess");
-        currentBox.innerText = guess.charAt(i).toUpperCase();
+        currentBox.innerText = guessedLetter;
 
     }
+}
+
+function clearKeyClass(key){
+    key.classList.remove('correct-letter');
+    key.classList.remove('misplaced-letter');
+    key.classList.remove('incorrect-letter');
+}
+
+function updateDomForWordLength(wordLength) {
+
+    if(wordLength === currentWordLength){
+        return;
+    }
+
+    if(wordLength < 8 && wordLength > currentWordLength){
+
+
+        guessContainers.forEach(guessContainer => {
+            let count = 1;
+            
+            while (guessContainer.childElementCount < wordLength) {
+                const blockNumber = currentWordLength + count;
+                const child = document.createElement("div");
+                child.classList.add('letter-block');
+
+                const grandchild = document.createElement('div');
+                grandchild.classList.add('letter-block-inner');
+                grandchild.classList.add('block-' + blockNumber);
+                grandchild.classList.add('no-guess')
+
+                child.appendChild(grandchild);
+                guessContainer.appendChild(child);
+
+                count++;
+            }
+
+        })
+
+    } else if(wordLength > 3 && wordLength < currentWordLength) {
+        guessContainers.forEach(guessContainer=>{
+            while(guessContainer.childElementCount > wordLength){
+                guessContainer.lastChild.remove();
+            }
+        })
+    }
+}
+
+function keyPress(e) {
+
+    const currentInput = inputBox.value;
+    const currentInputLength = currentInput.length;
+    let newInput = "";
+
+    if (e.target.id === 'backspace-key') {
+
+        if(currentInputLength > 1) {
+            newInput = currentInput.substring(0, currentInputLength - 1);
+        }
+
+    } else {
+
+        const pressed = e.target.innerText;
+        newInput = currentInput + pressed.toUpperCase();
+
+    }
+
+    inputBox.value = newInput;
 }
