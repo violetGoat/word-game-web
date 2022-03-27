@@ -29,14 +29,23 @@ fetchSecretWord();
 async function fetchSecretWord(wordLength = WORD_LENGTH) {
 
     let isValid = false;
+    let error = false;
 
     do {
-        let response = await fetch(RANDOM_WORD_API_URL + wordLength);
-        secretWord = await getTextFromStream(response.body);
-        isValid = await isValidWord(secretWord);
-    } while(!isValid)
+        fetch(RANDOM_WORD_API_URL + wordLength)
+            .then(response=>getTextFromStream(response.body))
+            .then(word=>secretWord = word)
+            .catch(()=>error = true);
 
-    currentWordLength = wordLength;
+        isValid = await isValidWord(secretWord);
+
+    } while(!isValid && !error)
+
+    if(!error) {
+        currentWordLength = wordLength;
+    } else {
+        printMessage("This is embarrassing. I'm not working.")
+    }
 
 }
 
@@ -111,7 +120,7 @@ function reset(wordLength){
     keys.forEach(key=>clearKeyClass(key));
 
     fetchSecretWord(wordLength);
-
+    gameOver = false;
 }
 
 function resetSame(){
@@ -214,7 +223,7 @@ function updateDomWithResult(guess){
 
     const currentRowGuessBoxes = guessContainers[guessCount].children;
 
-    // update color of letters in results container (top)
+
     for(let i = 0; i < secretWord.length; i++){
 
         const guessedLetter = guess.charAt(i).toUpperCase();
@@ -225,25 +234,25 @@ function updateDomWithResult(guess){
             currentBox.classList.add("correct-letter")
         } else if(resultArray[i] === 1) {
             currentBox.classList.add("misplaced-letter")
-
-            if(correspondingKey!== null){
-                clearKeyClass(correspondingKey)
-                correspondingKey.classList.add("misplaced-letter")
-            }
         } else {
             currentBox.classList.add("incorrect-letter")
-
-            if(correspondingKey!== null){
-                clearKeyClass(correspondingKey)
-                correspondingKey.classList.add("incorrect-letter")
-            }
-
         }
 
         currentBox.classList.remove("no-guess");
         currentBox.innerText = guessedLetter;
 
+        // set keyboard key color to 'incorrect' if current letter is not in the secret word
+        if(frequencyOfCharacterInCorrectWord(guessedLetter.toLowerCase()) === 0){
+            if(correspondingKey!== null){
+                clearKeyClass(correspondingKey)
+                correspondingKey.classList.add("incorrect-letter")
+            }
+        }
+
     }
+
+
+
 }
 
 function clearKeyClass(key){
@@ -295,20 +304,22 @@ function keyPress(e) {
 
     const currentInput = inputBox.value;
     const currentInputLength = currentInput.length;
-    let newInput = "";
+    let newInput = currentInput;
 
     if (e.target.id === 'backspace-key') {
 
-        if(currentInputLength > 1) {
+        if(currentInputLength > 0) {
             newInput = currentInput.substring(0, currentInputLength - 1);
         }
 
-    } else {
+    } else if (currentInputLength < currentWordLength) {
 
         const pressed = e.target.innerText;
         newInput = currentInput + pressed.toUpperCase();
 
     }
 
+
     inputBox.value = newInput;
+    e.blur();
 }

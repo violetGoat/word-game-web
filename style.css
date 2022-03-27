@@ -13,9 +13,17 @@
     box-sizing: border-box;
 }
 
+html{
+    margin:0;
+    padding:0;
+    overflow: hidden;
+}
+
 body{
+    position: absolute;
     color: white;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -33,6 +41,7 @@ body{
     width: 90%;
     max-width: 600px;
     height: 500px;
+    border-radius: 5px;
 }
 
 .input-container{
@@ -44,10 +53,44 @@ body{
     height: 100px;
     width: 90%;
     max-width: 600px;
-    margin: 10px 0px;
-
+    margin-top: 10px;
+    border-radius: 5px;
     background-color: var(--dark-sky-blue);
 
+}
+
+.reset-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 22%;
+    flex-grow: 1;
+}
+
+button{
+    color: white;
+    height: 85%;
+    font-size: 20px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 3px solid white;
+    transition: all 0.20s;
+    background-color: var(--lt-pewter-blue);
+    flex-grow: 1;
+}
+
+#submit-button{
+    width: 22%;
+}
+
+button:active{
+    transform: translateY(2px) scale(.95);
+}
+
+button:focus, button:hover {
+    box-shadow: 0 0 10px var(--deep-champagne);
+    border: 3px solid var(--deep-champagne);
 }
 
 .message-container{
@@ -87,17 +130,25 @@ body{
     height: 100%;
     width: 100%;
     background-color: var(--lt-pewter-blue);
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
 }
 
 
 #input-box{
     color: var(--deep-champagne);
     height: 85%;
-    width: 60%;
+    width: 45%;
     font-size: 22px;
     text-transform: uppercase;
     letter-spacing: 4px;
     background-color: var(--lt-pewter-blue);
+    border-radius: 5px;
 }
 
 input[type=text], textarea {
@@ -106,35 +157,12 @@ input[type=text], textarea {
     padding: 3px 0px 3px 3px;
     margin: 5px 1px 3px 0px;
     border: 3px solid white;
-    border-radius: 5px;
 }
 
 input[type=text]:focus, textarea:focus {
     box-shadow: 0 0 10px var(--deep-champagne);
     border: 3px solid var(--deep-champagne);
 }
-
-button{
-    color: white;
-    height: 80%;
-    font-size: 20px;
-    padding: 5px;
-    border-radius: 10px;
-    border: 3px solid white;
-    transition: all 0.20s;
-    background-color: var(--lt-pewter-blue);
-}
-
-
-button:active{
-    transform: translateY(2px) scale(.95);
-}
-
-button:focus, button:hover {
-    box-shadow: 0 0 10px var(--deep-champagne);
-    border: 3px solid var(--deep-champagne);
-}
-
 
 .message-box{
     font-size: 1.5rem;
@@ -179,7 +207,7 @@ button:focus, button:hover {
 }
 
 .key:hover{
-    transform: scale(1.2);
+    transform: scale(1.15);
 }
 
 .key:active{
@@ -246,32 +274,24 @@ button:focus, button:hover {
 
     .results-container{
         width: 100%;
-        height: 45%;
+        height: 49%;
         max-width: none;
     }
 
     .input-container{
         width: 100%;
-        height: 10%;
+        max-width: none;
+        height: 7%;
         padding: 0;
         margin-top: 5px;
         justify-content: space-evenly;
-        padding: 0 5px;
     }
 
     #input-box{
         font-size: 1.25rem;
         height: 90%;
         width: 40%;
-    }
-
-    .reset-container{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 90%;
-        width: 29%;
-        margin: 1px;
+        margin: 0;
     }
 
     input[type=text], textarea {
@@ -280,7 +300,12 @@ button:focus, button:hover {
         padding: 1px 0px 1px 5px;
         border: 2px solid white;
         border-radius: 5px;
-        height: 90%;
+        pointer-events: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     input[type=text]:focus, textarea:focus {
@@ -290,11 +315,12 @@ button:focus, button:hover {
 
     button{
         font-size: 1.1rem;
-        border-radius: 4px;
-        border: 1px solid white;
+        border-radius: 3px;
+        border: 2px solid white;
         padding: 6px 6px;
         margin: 0 2px;
         height: 90%;
+        flex-grow: 1;
     }
 
     button:active{
@@ -303,13 +329,12 @@ button:focus, button:hover {
 
     button:focus, button:hover {
         box-shadow: 0 0 5px var(--deep-champagne);
-        border: 1px solid var(--deep-champagne);
+        border: 2px solid var(--deep-champagne);
     }
 
     #submit-button{
         width: 25%;
         font-size: 1rem;
-        height: 90%;
     }
 
     .keyboard-container{
@@ -333,7 +358,7 @@ button:focus, button:hover {
     .message-box{
         align-items: center;
         justify-content: center;
-        font-size: 1rem;
+        font-size: 1.25rem;
     }
 
 
