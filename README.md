@@ -2,7 +2,7 @@
 
 This is my rendition of Wordle, a modern classic. The project (front-end) can be viewed and played here:
 
-[Word Game Web](www.violetgoat.com)
+[Word Game Web](http://www.violetgoat.com)
 
 ### How to play
 
