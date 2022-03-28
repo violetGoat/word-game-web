@@ -206,14 +206,13 @@ input[type=text]:focus, textarea:focus {
     width: 12%;
 }
 
-.key:hover{
+.key:focus, key:hover{
     transform: scale(1.15);
 }
 
 .key:active{
     transform: translateY(2px) scale(.98);
 }
-
 
 .correct-letter{
     background-color: var(--dark-spring-green);
@@ -267,8 +266,6 @@ input[type=text]:focus, textarea:focus {
 .keyboard-container {
     display: none;
 }
-
-
 
 @media only screen and (max-width: 1000px){
 
