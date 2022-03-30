@@ -199,6 +199,8 @@ input[type=text]:focus, textarea:focus {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    touch-action: manipulation;
+    cursor: pointer;
 
 }
 
@@ -264,6 +266,7 @@ input[type=text]:focus, textarea:focus {
 }
 
 .keyboard-container {
+    touch-action: manipulation;
     display: none;
 }
 
