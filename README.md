@@ -15,6 +15,10 @@ Guess the secret word in 6 or fewer tries.
       If a letter is colored green, the word contains it in the position in which it is located in your guessed word. 
 3.  Repeat until you guess the word (or use up your allowed 6 guesses). 
 
+Click the '↺' button to reset the game (with a new secret word).  
+Click the '+' button to increase the length of the secret word (up to 7 letters).
+Click the '-' button to decrease the length of the secret word (as few as 4 letters).
+
 ## Development Notes
 
 ### Languages
